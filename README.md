@@ -1,6 +1,10 @@
-# Nashville Housing Data Analysis | Excel & Python
+# Nashville Housing Data Analysis | Excel, Python & Power BI
 
-An end-to-end data project on the Nashville Housing Sales dataset. **Part 1** cleans the raw data using Microsoft Excel. **Part 2** explores the cleaned data in a Jupyter Notebook using pandas and matplotlib to calculate statistics, find trends and patterns, and flag anomalies.
+An end-to-end data project on the Nashville Housing Sales dataset.
+
+- **Part 1:** Clean the raw data using Microsoft Excel.
+- **Part 2:** Explore the cleaned data in a Jupyter Notebook (pandas and matplotlib) to calculate statistics, find trends and flag anomalies.
+- **Part 3:** Build an interactive Power BI dashboard that communicates the main findings.
 
 ## Dataset Overview
 
@@ -25,6 +29,12 @@ The dataset contains housing sales records from Nashville, Tennessee, covering t
 **Part 2: Exploratory Data Analysis**
 - Python 3 (pandas, matplotlib)
 - Jupyter Notebook
+
+**Part 3: Dashboard**
+- Power BI Desktop
+- Power Query (data preparation)
+- DAX measures
+- Slicers and cross-filtering
 
 ---
 
@@ -145,6 +155,69 @@ Single-family homes are about 61% of sales. Condos sell for about the same as ho
 - **Acreage outliers.** The median is 0.27 acres but the maximum is 160, and 48 sales are over 10 acres.
 - **Two sales dated 2019** in a dataset that otherwise ends in October 2016.
 
+---
+
+# Part 3: Power BI Dashboard
+
+**File:** `dashboard/Nashville_Housing_Dashboard.pbix`
+
+An interactive one-page dashboard that turns the findings from Part 2 into visuals anyone can explore.
+
+![Nashville Housing Sales dashboard](images/dashboard.png)
+
+## KPIs
+
+| KPI | Value | How it is calculated |
+|---|---:|---|
+| Total Sales | 56K | Count of sales records |
+| Median Price | $206K | Median of `SalePrice` |
+| Price Growth | 27.52% | Change in median price from 2013 to 2016 |
+| Sold as Vacant | 8.28% | Share of sales where `SoldAsVacant = Yes` |
+
+## Charts
+
+| Chart | Finding it shows |
+|---|---|
+| Median price by quarter (line) | Median price rose about 28% from 2013 to 2016 |
+| Median price by bedrooms (column) | Each extra bedroom raises the median price, especially from 3 to 4 |
+| Total sales by land use (bar) | Single-family homes and condos make up most sales |
+| Top 5 cities by median price (bar) | Suburbs like Nolensville and Brentwood cost more than Nashville |
+| Sales by month (column) | Sales peak in late spring and summer |
+
+## Filters
+
+- **Year:** tile slicer (2013 to 2016)
+- **LandUse:** dropdown slicer
+- **SoldAsVacant:** dropdown slicer
+
+All slicers cross-filter the KPIs and charts, so you can explore a property type or year on the whole page.
+
+## Data Preparation (Power Query)
+
+- Renamed `UniqueID ` to remove the trailing space.
+- Changed `RESIDENTIAL RESIDENTIAL CONDO` to `RESIDENTIAL CONDO`.
+- Treated `TotalValue = 0` as missing (null).
+- Set correct data types (dates, numbers, text IDs).
+- Added `Year`, `Month`, `MonthName` and `Quarter` columns.
+- Excluded the 2 records dated 2019.
+
+## DAX Measures
+
+```
+Total Sales = COUNTROWS(Housing)
+Median Price = MEDIAN(Housing[SalePrice])
+Median Price 2013 = CALCULATE([Median Price], Housing[Year] = 2013, ALL(Housing[Year]))
+Median Price 2016 = CALCULATE([Median Price], Housing[Year] = 2016, ALL(Housing[Year]))
+Price Growth % = DIVIDE([Median Price 2016] - [Median Price 2013], [Median Price 2013])
+% Sold as Vacant = DIVIDE(CALCULATE(COUNTROWS(Housing), Housing[SoldAsVacant] = "Yes"), [Total Sales])
+```
+
+## Dashboard Notes
+
+- **Medians, not averages,** are used for prices because bulk sales (for example $13.2M repeated across 92 condo units) inflate averages.
+- 2016 is a partial year (data ends in October), so the price growth compares full-year medians for 2013 with the partial year 2016.
+- The monthly chart includes all years, so its counts are higher than the 2013 to 2015 figures in Part 2. The June peak appears either way.
+- Opening the `.pbix` file needs **Power BI Desktop** (Windows). If you can't open it, the screenshot above shows the final result.
 
 ---
 
@@ -155,7 +228,8 @@ Single-family homes are about 61% of sales. Condos sell for about the same as ho
 | `data/NashvilleHousingUncleaned.xlsx` | Original dataset |
 | `data/NashvilleHousingCleaned.xlsx` | Cleaned dataset |
 | `notebooks/Nashville_Housing_EDA_Simple.ipynb` | EDA notebook |
-| `images/` | The five charts from the notebook, used in this README |
+| `dashboard/Nashville_Housing_Dashboard.pbix` | Power BI dashboard |
+| `images/` | Charts and dashboard screenshot used in this README |
 
 ## How to Run the Notebook
 
@@ -191,9 +265,11 @@ Through this project, I worked on:
 - Correcting data types and validating the cleaned dataset.
 - Calculating summary statistics and using medians for skewed data.
 - Finding trends, patterns and anomalies with pandas and matplotlib.
+- Preparing data in Power Query and writing DAX measures.
+- Designing an interactive dashboard with KPIs, charts and slicers.
 - Explaining findings in plain language.
 
-This project helped me gain practical experience with Excel data cleaning and Python exploratory analysis, and understand the importance of preparing reliable data before drawing conclusions.
+This project helped me gain practical experience across the full workflow: cleaning data in Excel, exploring it in Python, and presenting the results in Power BI, and understand the importance of preparing reliable data before drawing conclusions.
 
 ## Author
 
