@@ -1,5 +1,7 @@
 # Nashville Housing Data Analysis | Excel, Python & Power BI
 
+📄 **[Nashville Housing Case Study (PDF)](Nashville_Housing_Case_Study.pdf)**
+
 An end-to-end data project on the Nashville Housing Sales dataset.
 
 - **Part 1:** Clean the raw data using Microsoft Excel.
